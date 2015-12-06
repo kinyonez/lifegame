@@ -1,4 +1,4 @@
-# Conway's Game of Life inplementation in Processing.py
+# Conway's Game of Life
 #
 # Date:     2015-12-06
 # Version:  0.0.1
