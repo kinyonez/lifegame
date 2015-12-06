@@ -18,7 +18,7 @@ cellLiveN = []
 cellSize = 25
 
 def setup():
-    # 初期変数設定
+    # 初期設定
     global pushedColor, liveColor
     size(1000, 1100)
     background(20)
