@@ -61,7 +61,7 @@ def draw():
     for j in range(0, width + 1, 25):
         line(0, j, width + 1, j)
     line(width / 2, width, width / 2, height)
-    # ステータスを表示
+    # ステータス分岐
     if status == "pre" and len(liveP) > 0:
         status = "initialized"
     if status == "pre" or status == "initialized":
