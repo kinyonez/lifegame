@@ -119,10 +119,10 @@ def liveordead():
     tmp2 = []
     tmp3 = []
     for a in neighbor:
-        tmp1.append(cellID(a[0], a[1]))
+        tmp1.append(setID(a[0], a[1]))
     tmp2 = set(tmp1)
     for b in tmp2:
-        tmp3.append(resolvID(b))
+        tmp3.append(resolveID(b))
     for cell2 in tmp3:
         if cell2[0] >= 0 and cell2[0] < width // 25 and cell2[1] >= 0 and cell2[1] < width // 25:
             neighborU.append([cell2[0], cell2[1]])
@@ -152,11 +152,11 @@ def liveordead():
                 liveN.append(cell3)
     liveP = liveN
 
-def cellID(cX, cY):
+def setID(cX, cY):
     cid = str(cX) + "_" + str(cY)
     return cid
 
-def resolvID(cellID):
+def resolveID(cellID):
     tmp = cellID.split("_")
     rlist = [int(tmp[0]), int(tmp[1])]
     return rlist
