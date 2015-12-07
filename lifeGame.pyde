@@ -1,7 +1,7 @@
 # Conway's Game of Life
 #
-# Date:     2015-12-06
-# Version:  0.0.1
+# Date:     2015-12-07
+# Version:  0.0.2
 #
 # 初期変数
 message1 = "Select the initial cells before push START."
@@ -13,8 +13,8 @@ button3 = "RETRY"
 status = "pre"
 cellX = 0
 cellY = 0
-cellLive = []
-cellLiveN = []
+liveP = []
+liveN = []
 cellSize = 25
 
 def setup():
@@ -30,15 +30,15 @@ def setup():
     background(20)
 
 def mousePressed():
-    # ステータス値の設定
-    global status, cellX, cellY, cellLive
-    print len(cellLive)
+    # ステータス判定
+    global status, cellX, cellY, liveP
+    print len(liveP)
     if mouseY > width + 1:
         if mouseX > width / 2:
             if status == "initialized":
                 status = "running"
             elif status == "running":
-                cellLive = []
+                liveP = []
                 status = "finished"
             elif status == "finished":
                 status = "pre"
@@ -46,13 +46,13 @@ def mousePressed():
     elif status == "pre" or status == "initialized":
         cellX = int(mouseX // 25)
         cellY = int(mouseY // 25)
-        if [cellX, cellY] in cellLive:
-            cellLive.remove([cellX, cellY])
+        if [cellX, cellY] in liveP:
+            liveP.remove([cellX, cellY])
         else:
-            cellLive.append([cellX, cellY])
+            liveP.append([cellX, cellY])
 
 def draw():
-    global status, cellLive, message1, message2, message3, button1, button2, button3, liveNext
+    global status, liveP, message1, message2, message3, button1, button2, button3, liveN
     background(20)
     print status
     # 格子を引く
@@ -62,7 +62,7 @@ def draw():
         line(0, j, width + 1, j)
     line(width / 2, width, width / 2, height)
     # ステータスを表示
-    if status == "pre" and len(cellLive) > 0:
+    if status == "pre" and len(liveP) > 0:
         status = "initialized"
     if status == "pre" or status == "initialized":
         textSize(25)
@@ -74,7 +74,7 @@ def draw():
             text(button1, (width / 4) * 3, (width + height) / 2)
             printCell()
     elif status == "running":
-        if len(cellLive) == 0:
+        if len(liveP) == 0:
             status = "finished"
         textSize(25)
         textAlign(LEFT)
@@ -94,173 +94,69 @@ def draw():
 
 def printCell():
     # 生きてるセルを描画
-    global cellLive, cellSize
-    print cellLive
-    for cell in cellLive:
-        rect(cell[0] * 25, cell[1] * 25, cellSize, cellSize)
+    global liveP, cellSize
+    print liveP
+    for live in liveP:
+        rect(live[0] * 25, live[1] * 25, cellSize, cellSize)
 
 def liveordead():
     # 死活判定
     ## 生存セルとその近傍セルをリストアップ
-    global cellLive, liveNext
+    global liveP, liveN
     neighbor = []
-    for cell in cellLive:
-        if cell[0] > 0:
-            if cell[0] != int(width // 25 - 1):
-                if cell[1] > 0:
-                    if cell[1] != int(width // 25 - 1):
-                        neighbor.append([cell[0] - 1, cell[1] - 1])
-                        neighbor.append([cell[0] - 1, cell[1]])
-                        neighbor.append([cell[0] - 1, cell[1] + 1])
-                        neighbor.append([cell[0], cell[1] - 1])
-                        neighbor.append([cell[0], cell[1]])
-                        neighbor.append([cell[0], cell[1] + 1])
-                        neighbor.append([cell[0] + 1, cell[1] - 1])
-                        neighbor.append([cell[0] + 1, cell[1]])
-                        neighbor.append([cell[0] + 1, cell[1] + 1])
-                        continue
-                    neighbor.append([cell[0] - 1, cell[1] - 1])
-                    neighbor.append([cell[0] - 1, cell[1]])
-                    neighbor.append([cell[0], cell[1] - 1])
-                    neighbor.append([cell[0], cell[1]])
-                    neighbor.append([cell[0] + 1, cell[1] - 1])
-                    neighbor.append([cell[0] + 1, cell[1]])
-                    continue
-                neighbor.append([cell[0] - 1, cell[1]])
-                neighbor.append([cell[0] - 1, cell[1] + 1])
-                neighbor.append([cell[0] + 1, cell[1]])
-                neighbor.append([cell[0] + 1, cell[1] + 1])
-                neighbor.append([cell[0], cell[1]])
-                neighbor.append([cell[0], cell[1] + 1])
-                continue
-            if cell[1] > 0:
-                if cell[1] != int(width // 25 - 1):
-                    neighbor.append([cell[0] - 1, cell[1] - 1])
-                    neighbor.append([cell[0] - 1, cell[1]])
-                    neighbor.append([cell[0] - 1, cell[1] + 1])
-                    neighbor.append([cell[0], cell[1] - 1])
-                    neighbor.append([cell[0], cell[1]])
-                    neighbor.append([cell[0], cell[1] + 1])
-                    continue
-                neighbor.append([cell[0] - 1, cell[1]])
-                neighbor.append([cell[0] - 1, cell[1] - 1])
-                neighbor.append([cell[0], cell[1] - 1])
-                neighbor.append([cell[0], cell[1]])
-                continue
-            neighbor.append([cell[0] - 1, cell[1]])
-            neighbor.append([cell[0] - 1, cell[1] + 1])
-            neighbor.append([cell[0], cell[1]])
-            neighbor.append([cell[0], cell[1] + 1])
-            continue
-        if cell[1] > 0:
-            if cell[1] != int(width // 25 - 1):
-                neighbor.append([cell[0], cell[1] - 1])
-                neighbor.append([cell[0], cell[1]])
-                neighbor.append([cell[0], cell[1] + 1])
-                neighbor.append([cell[0] + 1, cell[1] - 1])
-                neighbor.append([cell[0] + 1, cell[1]])
-                neighbor.append([cell[0] + 1, cell[1] + 1])
-                continue
-            neighbor.append([cell[0], cell[1] - 1])
-            neighbor.append([cell[0], cell[1]])
-            neighbor.append([cell[0] + 1, cell[1] - 1])
-            neighbor.append([cell[0] + 1, cell[1]])
-            continue
-        neighbor.append([cell[0], cell[1]])
-        neighbor.append([cell[0], cell[1] + 1])
-        neighbor.append([cell[0] + 1, cell[1]])
-        neighbor.append([cell[0] + 1, cell[1] + 1])
-    tmp1 = []
     neighborU = []
+    for cell1 in liveP:
+        neighbor.append([cell1[0] - 1, cell1[1] - 1])
+        neighbor.append([cell1[0] - 1, cell1[1]])
+        neighbor.append([cell1[0] - 1, cell1[1] + 1])
+        neighbor.append([cell1[0], cell1[1] - 1])
+        neighbor.append([cell1[0], cell1[1]])
+        neighbor.append([cell1[0], cell1[1] + 1])
+        neighbor.append([cell1[0] + 1, cell1[1] - 1])
+        neighbor.append([cell1[0] + 1, cell1[1]])
+        neighbor.append([cell1[0] + 1, cell1[1] + 1])
+    tmp1 = []
+    tmp2 = []
+    tmp3 = []
     for a in neighbor:
         tmp1.append(cellID(a[0], a[1]))
-    tmp1U = set(tmp1)
-    for b in tmp1U:
-        neighborU.append(resolvID(b))
+    tmp2 = set(tmp1)
+    for b in tmp2:
+        tmp3.append(resolvID(b))
+    for cell2 in tmp3:
+        if cell2[0] >= 0 and cell2[0] < width // 25 and cell2[1] >= 0 and cell2[1] < width // 25:
+            neighborU.append([cell2[0], cell2[1]])
+
     ## 生存セル及びその近傍セルの死活を判定
-    cellLiveN = []
-    for dcell in neighborU:
-        ldlist = []
-        if dcell[0] > 0:
-            if dcell[0] != int(width // 25 - 1):
-                if dcell[1] > 0:
-                    if dcell[1] != int(width // 25 - 1):
-                        ldlist.append([dcell[0] - 1, dcell[1] - 1])
-                        ldlist.append([dcell[0] - 1, dcell[1]])
-                        ldlist.append([dcell[0] - 1, dcell[1] + 1])
-                        ldlist.append([dcell[0], dcell[1] - 1])
-                        ldlist.append([dcell[0], dcell[1]])
-                        ldlist.append([dcell[0], dcell[1] + 1])
-                        ldlist.append([dcell[0] + 1, dcell[1] - 1])
-                        ldlist.append([dcell[0] + 1, dcell[1]])
-                        ldlist.append([dcell[0] + 1, dcell[1] + 1])
-                    else:
-                        ldlist.append([dcell[0] - 1, dcell[1] - 1])
-                        ldlist.append([dcell[0] - 1, dcell[1]])
-                        ldlist.append([dcell[0], dcell[1] - 1])
-                        ldlist.append([dcell[0], dcell[1]])
-                        ldlist.append([dcell[0] + 1, dcell[1] - 1])
-                        ldlist.append([dcell[0] + 1, dcell[1]])
-                else:
-                    ldlist.append([dcell[0] - 1, dcell[1]])
-                    ldlist.append([dcell[0] - 1, dcell[1] + 1])
-                    ldlist.append([dcell[0] + 1, dcell[1]])
-                    ldlist.append([dcell[0] + 1, dcell[1] + 1])
-                    ldlist.append([dcell[0], dcell[1]])
-                    ldlist.append([dcell[0], dcell[1] + 1])
-            elif dcell[1] > 0:
-                if dcell[1] != int(width // 25 - 1):
-                    ldlist.append([dcell[0] - 1, dcell[1] - 1])
-                    ldlist.append([dcell[0] - 1, dcell[1]])
-                    ldlist.append([dcell[0] - 1, dcell[1] + 1])
-                    ldlist.append([dcell[0], dcell[1] - 1])
-                    ldlist.append([dcell[0], dcell[1]])
-                    ldlist.append([dcell[0], dcell[1] + 1])
-                else:
-                    ldlist.append([dcell[0] - 1, dcell[1]])
-                    ldlist.append([dcell[0] - 1, dcell[1] - 1])
-                    ldlist.append([dcell[0], dcell[1] - 1])
-                    ldlist.append([dcell[0], dcell[1]])
-            else:
-                ldlist.append([dcell[0] - 1, dcell[1]])
-                ldlist.append([dcell[0] - 1, dcell[1] + 1])
-                ldlist.append([dcell[0], dcell[1]])
-                ldlist.append([dcell[0], dcell[1] + 1])
-        elif dcell[1] > 0:
-            if dcell[1] != int(width // 25 - 1):
-                ldlist.append([dcell[0], dcell[1] - 1])
-                ldlist.append([dcell[0], dcell[1]])
-                ldlist.append([dcell[0], dcell[1] + 1])
-                ldlist.append([dcell[0] + 1, dcell[1] - 1])
-                ldlist.append([dcell[0] + 1, dcell[1]])
-                ldlist.append([dcell[0] + 1, dcell[1] + 1])
-            else:
-                ldlist.append([dcell[0], dcell[1] - 1])
-                ldlist.append([dcell[0], dcell[1]])
-                ldlist.append([dcell[0] + 1, dcell[1] - 1])
-                ldlist.append([dcell[0] + 1, dcell[1]])
-        else:
-            ldlist.append([dcell[0], dcell[1]])
-            ldlist.append([dcell[0], dcell[1] + 1])
-            ldlist.append([dcell[0] + 1, dcell[1]])
-            ldlist.append([dcell[0] + 1, dcell[1] + 1])
+    liveN = []
+    for cell3 in neighborU:
+        cPoint = []
+        cPoint.append([cell3[0] - 1, cell3[1] - 1])
+        cPoint.append([cell3[0] - 1, cell3[1]])
+        cPoint.append([cell3[0] - 1, cell3[1] + 1])
+        cPoint.append([cell3[0], cell3[1] - 1])
+        cPoint.append([cell3[0], cell3[1]])
+        cPoint.append([cell3[0], cell3[1] + 1])
+        cPoint.append([cell3[0] + 1, cell3[1] - 1])
+        cPoint.append([cell3[0] + 1, cell3[1]])
+        cPoint.append([cell3[0] + 1, cell3[1] + 1])
         match = 0
-        for p in ldlist:
-            if cellLive.count(p) == 1:
+        for p in cPoint:
+            if p in liveP:
                 match += 1
-        if dcell in cellLive:
+        if cell3 in liveP:
             if match == 3 or match == 4:
-                cellLiveN.append(dcell)
+                liveN.append(cell3)
         else:
             if match == 3:
-                cellLiveN.append(dcell)
-    cellLive = cellLiveN
+                liveN.append(cell3)
+    liveP = liveN
 
 def cellID(cX, cY):
-    cid = str(cX) + "-" + str(cY)
+    cid = str(cX) + "_" + str(cY)
     return cid
 
 def resolvID(cellID):
-    tmp = cellID.split("-")
+    tmp = cellID.split("_")
     rlist = [int(tmp[0]), int(tmp[1])]
     return rlist
