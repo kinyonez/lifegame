@@ -21,8 +21,6 @@ cellSize = 25
 def setup():
     size(1000, 1100)
     background(20)
-    pusshedColor = color(244)
-    liveColor = color(220)
     stroke(70)
     fill(200)
     frameRate(8)
