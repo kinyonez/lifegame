@@ -1,7 +1,7 @@
 # Conway's Game of Life
 #
-# Date:     2015-12-07
-# Version:  0.0.2
+# Date:     2015-12-08
+# Version:  0.1.0
 #
 # 初期変数
 message1 = "Select the initial cells before push START."
@@ -17,8 +17,8 @@ liveP = []
 liveN = []
 cellSize = 25
 
+# 初期設定
 def setup():
-    # 初期設定
     global pushedColor, liveColor
     size(1000, 1100)
     background(20)
@@ -29,10 +29,10 @@ def setup():
     frameRate(8)
     background(20)
 
+# マウス操作
 def mousePressed():
-    # ステータス判定
+    ## ステータス入力
     global status, cellX, cellY, liveP
-    print len(liveP)
     if mouseY > width + 1:
         if mouseX > width / 2:
             if status == "initialized":
@@ -42,7 +42,7 @@ def mousePressed():
                 status = "finished"
             elif status == "finished":
                 status = "pre"
-    # セルの初期値インプット
+    ## セル初期値入力
     elif status == "pre" or status == "initialized":
         cellX = int(mouseX // 25)
         cellY = int(mouseY // 25)
@@ -51,10 +51,10 @@ def mousePressed():
         else:
             liveP.append([cellX, cellY])
 
+# メインのdraw
 def draw():
     global status, liveP, message1, message2, message3, button1, button2, button3, liveN
     background(20)
-    print status
     # 格子を引く
     for i in range(0, width + 1, 25):
         line(i, 0, i, width + 1)
@@ -92,38 +92,33 @@ def draw():
         textAlign(CENTER, CENTER)
         text(button3, (width / 4) * 3, (width + height) / 2)
 
+# 生きてるセルを描画
 def printCell():
-    # 生きてるセルを描画
     global liveP, cellSize
-    print liveP
-    for live in liveP:
-        rect(live[0] * 25, live[1] * 25, cellSize, cellSize)
+    for cell in liveP:
+        rect(cell[0] * 25, cell[1] * 25, cellSize, cellSize)
 
+# 死活判定
 def liveordead():
-    # 死活判定
     ## 生存セルとその近傍セルをリストアップ
     global liveP, liveN
-    neighbor = []
-    neighborU = []
+    neighbor = set()
     for cell1 in liveP:
-        neighbor.append([cell1[0] - 1, cell1[1] - 1])
-        neighbor.append([cell1[0] - 1, cell1[1]])
-        neighbor.append([cell1[0] - 1, cell1[1] + 1])
-        neighbor.append([cell1[0], cell1[1] - 1])
-        neighbor.append([cell1[0], cell1[1]])
-        neighbor.append([cell1[0], cell1[1] + 1])
-        neighbor.append([cell1[0] + 1, cell1[1] - 1])
-        neighbor.append([cell1[0] + 1, cell1[1]])
-        neighbor.append([cell1[0] + 1, cell1[1] + 1])
+        neighbor.add(setStr(cell1[0] - 1, cell1[1] - 1))
+        neighbor.add(setStr(cell1[0] - 1, cell1[1]))
+        neighbor.add(setStr(cell1[0] - 1, cell1[1] + 1))
+        neighbor.add(setStr(cell1[0], cell1[1] - 1))
+        neighbor.add(setStr(cell1[0], cell1[1]))
+        neighbor.add(setStr(cell1[0], cell1[1] + 1))
+        neighbor.add(setStr(cell1[0] + 1, cell1[1] - 1))
+        neighbor.add(setStr(cell1[0] + 1, cell1[1]))
+        neighbor.add(setStr(cell1[0] + 1, cell1[1] + 1))
     tmp1 = []
-    tmp2 = []
-    tmp3 = []
-    for a in neighbor:
-        tmp1.append(setID(a[0], a[1]))
-    tmp2 = set(tmp1)
-    for b in tmp2:
-        tmp3.append(resolveID(b))
-    for cell2 in tmp3:
+    for b in neighbor:
+        tmp1.append(resolveStr(b))
+    ## 枠外セルを除外
+    neighborU = []
+    for cell2 in tmp1:
         if cell2[0] >= 0 and cell2[0] < width // 25 and cell2[1] >= 0 and cell2[1] < width // 25:
             neighborU.append([cell2[0], cell2[1]])
 
@@ -152,11 +147,11 @@ def liveordead():
                 liveN.append(cell3)
     liveP = liveN
 
-def setID(cX, cY):
-    cid = str(cX) + "_" + str(cY)
-    return cid
+def setStr(cX, cY):
+    cStr = str(cX) + "_" + str(cY)
+    return cStr
 
-def resolveID(cellID):
-    tmp = cellID.split("_")
-    rlist = [int(tmp[0]), int(tmp[1])]
-    return rlist
+def resolveStr(cStr):
+    tmp = cStr.split("_")
+    clist = [int(tmp[0]), int(tmp[1])]
+    return clist
