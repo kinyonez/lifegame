@@ -19,7 +19,6 @@ cellSize = 25
 
 # 初期設定
 def setup():
-    global pushedColor, liveColor
     size(1000, 1100)
     background(20)
     pusshedColor = color(244)
@@ -53,7 +52,7 @@ def mousePressed():
 
 # メインのdraw
 def draw():
-    global status, liveP, message1, message2, message3, button1, button2, button3, liveN
+    global status, liveP, liveN, message1, message2, message3, button1, button2, button3
     background(20)
     # 格子を引く
     for i in range(0, width + 1, 25):
