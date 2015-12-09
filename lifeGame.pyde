@@ -24,7 +24,6 @@ def setup():
     stroke(70)
     fill(200)
     frameRate(8)
-    background(20)
 
 # マウス操作
 def mousePressed():
