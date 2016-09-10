@@ -4,7 +4,7 @@
 # Version:  0.1.0
 #
 # 初期変数
-message1 = "Select the initial cells before push START."
+message1 = "Select initial cells before push START."
 message2 = "Running..."
 message3 = "All cells are dead. "
 button1 = "START"
